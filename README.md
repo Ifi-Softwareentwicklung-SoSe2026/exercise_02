@@ -2,7 +2,7 @@
 
 author:   Volker Göhler
 email:    volker.goehler@informatik.tu-freiberg.de
-version:  0.0.1
+version:  0.0.2
 language: de
 narrator: Deutsch Female
 
@@ -28,7 +28,7 @@ Softwareentwicklung SoSe2026
 Bearbeitungszeitraum
 ====================
 
-*04. Mai - 10. Mai 2026*
+*04. Mai - 16. Mai 2026*
 
 ## Offene Fragen aus Aufgabe 01
 
@@ -70,144 +70,329 @@ Aufgabe 5: Himmelskörper-Gleichheit anhand der Namen
 
 ## Neue Aufgaben für diese Woche
 
-### **Aufgabe 1: Vererbung – Spezialisierung von `Himmelskoerper`**
+Wir nutzen die nächsten Wochen, um die Grundlagen der objektorientierten Programmierung weiter zu vertiefen. Die folgenden Aufgaben bauen auf den bisherigen Kenntnissen auf und führen neue Konzepte ein.
+Wir bauen teilweise auf Programmierergebnisse aus den vorherigen Aufgaben auf. Dazu gibt es im GitHub-Repository [Exercise_01](https://github.com/Ifi-Softwareentwicklung-SoSe2026/exercise_01) einen Unterordner solutions, falls Sie nicht so weit gekommen sein sollten.
 
-**Zeitaufwand: 60 Minuten**
+### **📌 Vorbereitung: Projekt erstellen**
 
-**Beschreibungstext:**
-Die Klasse `Himmelskoerper` soll durch Vererbung spezialisiert werden. Erstelle abgeleitete Klassen für die verschiedenen Typen von Himmelskörpern (`Stern`, `Planet`, `Mond`), um typspezifische Eigenschaften und Methoden zu kapseln.
+1. **Neues Projekt anlegen:**
 
-**Aufgabenbeschreibung:**
+   - Öffne **Visual Studio Code**.
+   - Erstelle ein neues **C#-Konsolenprojekt** mit:
+     ```bash
+     dotnet new console -n RaumfahrtMission
+     cd RaumfahrtMission
+     code .
+     ```
+   - Füge die Datei `Himmelskoerper.cs` mit der `Himmelskörper` Klasse aus der vorherigen Übung hinzu.
 
-1. Erstelle eine abstrakte Basisklasse `Himmelskoerper` mit gemeinsamen Eigenschaften und einer abstrakten Methode `GibtDatenAus()`.
-2. Leite die Klassen `Stern`, `Planet` und `Mond` von `Himmelskoerper` ab.
-3. Implementiere die `GibtDatenAus()`-Methode in jeder abgeleiteten Klasse, sodass typspezifische Daten ausgegeben werden.
-4. Passe die `HimmelskoerperFactory` an, sodass sie je nach Typ die richtige abgeleitete Klasse erstellt.
+2. **Namespace definieren:**
 
-```csharp
-abstract class Himmelskoerper
-{
-    public string Name { get; set; }
-    public int KatalogNummer { get; set; }
-    public abstract void GibtDatenAus();
-}
+   - Alle Klassen sollen im Namespace **`RaumfahrtMission`** liegen.
+   - Warum ist die Verwendung von Namespaces wichtig?
+   - Die Main-Methode soll in der Datei `Program.cs` liegen und den Namespace `RaumfahrtMission` verwenden (`using`).
 
-class Stern : Himmelskoerper
-{
-    public char? Spektralklasse { get; set; }
-    public float? ScheinbareHelligkeit { get; set; }
-    public override void GibtDatenAus()
-    {
-        Console.WriteLine($"Stern: {Name}, Katalog-Nummer: {KatalogNummer}, Spektralklasse: {Spektralklasse}, Helligkeit: {ScheinbareHelligkeit}");
-    }
-}
+### **🌌 Aufgabe 1: Klassenhierarchie für Himmelskörper**
+
+*Lernziele: Abstrakte Klassen, Vererbung, Constructor-Chaining, Properties*
+
+---
+
+#### **📝 Aufgabenstellung**
+
+Erstelle eine **abstrakte Basisklasse `Himmelskoerper`** und leite davon die konkreten Klassen **`Stern`**, **`Planet`** und **`Mond`** ab.
+
+- **Nur die abgeleiteten Klassen** (`Stern`, `Planet`, `Mond`) sollen instanziierbar sein.
+- Jede Klasse soll einen **Constructor** haben, der alle Eigenschaften initialisiert.
+- Nutze **Properties** mit `get;` und `set;` (oder `init;` für Immutability, falls gewünscht).
+
+##### **🔧 Hilfestellungen**
+
+```ascii
+        +-----------------+
+        | Himmelskoerper  |
+        | (abstrakt)      |
+        +-----------------+
+               ^
+               |
+        +---------------+
+        |               |
++-------------+ +-------------+
+|    Stern    | |    Planet   |
++-------------+ +-------------+
+                     ^
+                     |
+              +-------------+
+              |     Mond    |
+              +-------------+
 ```
 
-### **Aufgabe 2: Interfaces – `IVergleichbar` und `IAusgabe`**
+**1. Abstrakte Basisklasse `Himmelskoerper`**
+====================
 
-**Zeitaufwand: 45 Minuten**
+- **Eigenschaften (Properties):**
+  - `Name` (string)
+  - `KatalogNummer` (uint)
+- **Methoden:**
+  - Überschreibe `ToString()` für eine formatierte Ausgabe.
+  - Überschreibe `GetHashCode()` und `Equals()` (Vergleich über `Name`).
+- **Constructor:**
+  - Nimm `Name` und `KatalogNummer` als Parameter entgegen.
 
-**Beschreibungstext:**
-Interfaces ermöglichen eine flexible Strukturierung von Code. Implementiere zwei Interfaces für die `Himmelskoerper`-Hierarchie.
 
-**Aufgabenbeschreibung:**
+2. Klasse Stern (abgeleitet von Himmelskoerper)
+====================
 
-1. Erstelle ein Interface `IAusgabe` mit einer Methode `GibtDatenAus()`.
-2. Erstelle ein Interface `IVergleichbar` mit einer Methode `VergleicheMit(Himmelskoerper anderer)`, die einen `int`-Wert zurückgibt (analog zu `IComparable`).
-3. Implementiere beide Interfaces in der `Himmelskoerper`-Klasse bzw. den abgeleiteten Klassen.
-4. Nutze `IVergleichbar`, um Himmelskörper nach Katalog-Nummer zu sortieren.
+- Zusätzliche Eigenschaften:
 
+   - Spektralklasse (char, z. B. 'G', 'M')
+   - ScheinbareHelligkeit (float, z. B. -26.74 für die Sonne)
+
+- Constructor:
+
+   - Rufe den Base-Constructor mit base(name, katalogNummer) auf.
+   - Initialisiere die zusätzlichen Eigenschaften.
+
+
+3. Klasse Planet (abgeleitet von Himmelskoerper)
+====================
+
+- Zusätzliche Eigenschaften:
+
+   - Umlaufzeit (float, in Erdjahren)
+   - KatalogNummerReferenz (uint, Katalognummer des Zentralsterns)
+
+- Constructor:
+
+   - Rufe den Base-Constructor auf.
+
+
+4. Klasse Mond (abgeleitet von Planet)
+====================
+
+- Zusätzliche Eigenschaften:
+
+    - keine
+
+- Constructor:
+
+   - Ähnlich wie Planet, aber für Monde.
+
+
+#### ✅ Testaufgabe
+
+Erstelle in `Program.cs` folgende Objekte und gib sie aus:
 ```csharp
-interface IAusgabe
-{
-    void GibtDatenAus();
-}
 
-interface IVergleichbar
-{
-    int VergleicheMit(Himmelskoerper anderer);
-}
+Stern sonne = new Stern("Sonne", 10001, 'G', -26.74f);
+Planet erde = new Planet("Erde", 20001, 1.0f, 10001);
+Mond mond = new Mond("Mond", 30001, 0.0748f, 20001);
+
+Console.WriteLine(sonne);
+Console.WriteLine(erde);
+Console.WriteLine(mond);
 ```
 
-### **Aufgabe 3: Collections – `List<T>` und `Dictionary<TKey, TValue>`**
+#### 💡 Tipps
 
-**Zeitaufwand: 60 Minuten**
+- Abstrakte Klasse: Kann nicht direkt instanziiert werden (new Himmelskoerper() ist unmöglich).
+- `base()`: Ruft den Constructor der Basisklasse auf.
+- `override`: Überschreibt Methoden der Basisklasse (z. B. `ToString()`).
 
-**Beschreibungstext:**
-Statt einzelner Objekte sollen nun mehrere Himmelskörper in Collections verwaltet werden.
 
-**Aufgabenbeschreibung:**
+### 📊 Aufgabe 2: Bahndaten (Immutable DataBean)
 
-1. Erstelle eine `List<Himmelskoerper>`, um mehrere Himmelskörper zu speichern.
-2. Füge mindestens drei Himmelskörper unterschiedlichen Typs hinzu.
-3. Iteriere über die Liste und rufe `GibtDatenAus()` für jeden Himmelskörper auf.
-4. Erstelle ein `Dictionary<int, Himmelskoerper>`, das die Katalog-Nummer als Schlüssel verwendet.
-5. Implementiere eine Methode `SucheNachKatalogNummer(int nummer)`, die den entsprechenden Himmelskörper zurückgibt.
+Lernziele: Immutable Klassen, Properties mit init;, GetHashCode()
 
-```csharp
-List<Himmelskoerper> himmelskörper = new List<Himmelskoerper>();
-himmelskörper.Add(new Stern { Name = "Sonne", KatalogNummer = 10001, Spektralklasse = 'G' });
+#### 📝 Aufgabenstellung
 
-Dictionary<int, Himmelskoerper> katalog = new Dictionary<int, Himmelskoerper>();
-foreach (var hk in himmelskörper)
-{
-    katalog[hk.KatalogNummer] = hk;
-}
-```
+Erstelle eine immutable Klasse Bahndaten mit:
 
-### **Aufgabe 4: LINQ – Abfragen auf Collections**
+- Eigenschaften (nur `get;`):
 
-**Zeitaufwand: 45 Minuten**
+   - Himmelskoerper (Himmelskoerper-Objekt)
+   - Umlaufzeit (double, in Erdjahren)
+   - GroßeHalbachse (double, in AE)
+   - Exzentrizität (double, 0 = Kreisbahn, 0 < e < 1 = Ellipse)
 
-**Beschreibungstext:**
-LINQ (Language Integrated Query) ermöglicht elegante Abfragen auf Collections.
+- Constructor: Initialisiere alle Eigenschaften.
+- ToString(): Formatierte Ausgabe.
+- GetHashCode(): Berechne einen Hash aus allen Eigenschaften.
 
-**Aufgabenbeschreibung:**
+#### 🔧 Hilfestellungen
 
-1. Nutze LINQ, um alle Sterne aus der `List<Himmelskoerper>` zu filtern.
-2. Sortiere die gefilterten Sterne nach ihrer scheinbaren Helligkeit.
-3. Gib die Namen der sortierten Sterne aus.
-4. Berechne die durchschnittliche Umlaufzeit aller Planeten und Monde.
+1. Immutable Klasse mit init;
+=====================
 
-```csharp
-using System.Linq;
+- Nutze `init;` statt `set;`, um die Klasse nach der Initialisierung unveränderlich zu machen.
 
-var sterne = himmelskörper
-    .OfType<Stern>()
-    .OrderBy(s => s.ScheinbareHelligkeit)
-    .ToList();
 
-foreach (var stern in sterne)
-{
-    Console.WriteLine(stern.Name);
-}
-```
+2. `ToString()` und `GetHashCode()`
+=====================
 
-### **Aufgabe 5: Datei-I/O – Speichern und Laden**
+- `ToString()`: Verwende String Interpolation oder `StringBuilder` für die Ausgabe.
+- `GetHashCode()`: Kombiniere die HashCodes aller Eigenschaften (z. B. mit XOR oder `HashCode.Combine`).
 
-**Zeitaufwand: 60 Minuten**
-
-**Beschreibungstext:**
-Die gesammelten Daten sollen persistiert werden können. Implementiere Funktionalität zum Speichern und Laden von Himmelskörper-Daten in/aus einer Datei.
-
-**Aufgabenbeschreibung:**
-
-1. Implementiere eine Methode `SpeichereDaten(List<Himmelskoerper> liste, string dateiname)`, die die Daten im CSV-Format in eine Datei schreibt.
-2. Implementiere eine Methode `LadeDaten(string dateiname)`, die die CSV-Datei einliest und eine `List<Himmelskoerper>` zurückgibt.
-3. Nutze `StreamWriter` und `StreamReader` für die Datei-I/O.
-4. Behandle mögliche Ausnahmen (z. B. Datei nicht gefunden).
+#### ✅ Testaufgabe
 
 ```csharp
-using System.IO;
+Erstelle in Program.cs:
 
-void SpeichereDaten(List<Himmelskoerper> liste, string dateiname)
-{
-    using (StreamWriter writer = new StreamWriter(dateiname))
-    {
-        foreach (var hk in liste)
-        {
-            writer.WriteLine($"{hk.Name},{hk.KatalogNummer},{hk.GetType().Name}");
-        }
-    }
-}
+// Bahndaten für Erde (um die Sonne)
+Bahndaten erdbahn = new Bahndaten(
+    himmelskoerper: erde,
+    umlaufzeit: 1.0,
+    großeHalbachse: 1.0,
+    exzentrizität: 0.0167
+);
+
+// Bahndaten für Mond (um die Erde)
+Bahndaten mondbahn = new Bahndaten(
+    himmelskoerper: mond,
+    umlaufzeit: 0.0748,
+    großeHalbachse: 0.0026, // ~384.400 km in AE (1 AE ≈ 149,6 Mio. km)
+    exzentrizität: 0.0549
+);
+
+
+Console.WriteLine(erdbahn);
+Console.WriteLine(mondbahn);
 ```
+
+
+
+#### 💡 Tipps
+
+- Immutability: Objekte können nach der Erstellung nicht mehr verändert werden.
+- `init;`: Erlaubt die Initialisierung nur im Constructor oder bei der Objekterstellung.
+
+
+### 💾 Aufgabe 3: Speichervisualisierung
+
+Lernziele: params, GetHashCode(), optionaler unsafe-Code
+
+#### 📝 Aufgabenstellung
+
+Erstelle eine statische Klasse SpeicherVisualisierer mit:
+
+- Methode VisualisiereSpeicher:
+
+   - Nimm params object[] objekte entgegen.
+   - Gib für jedes Objekt Typ, Wert und HashCode aus.
+
+-  Methode ZeigeSpeicherInhaltUnsafe (Für Fortgeschrittene):
+
+   - Nutze unsafe-Code, um den Speicherinhalt als Hex-Dump auszugeben.
+
+
+#### 🔧 Hilfestellungen
+
+1. Logische Speicherdarstellung
+====================
+
+- Verwende `GetType().Name` für den Typ und `GetHashCode()` für den HashCode.
+- Nutze `params` für eine flexible Anzahl von Objekten.
+
+   - parameter: `params object[] objekte` ermöglicht es, mehrere Objekte als Argumente zu übergeben, ohne ein Array explizit erstellen zu müssen.
+
+
+2. (Optional) Hex-Dump mit unsafe
+====================
+
+- Projektoptionen: Aktiviere unsafe-Code in der .csproj-Datei:
+```xml
+
+<PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+</PropertyGroup>
+```
+
+
+- Methode:
+
+   - Berechne die Größe des Objekts mit `Marshal.SizeOf()`.
+   - Kopiere die Daten in ein Byte-Array und gebe sie als Hex-Dump aus.
+   - Achtung: Funktioniert nur für Werttypen oder blittable types (z. B. primitive Datentypen, Strukturen ohne Referenztypen).
+
+
+#### ✅ Testaufgabe
+```csharp
+
+SpeicherVisualisierer.VisualisiereSpeicher(sonne, erde, erdbahn);
+// Optional:
+// SpeicherVisualisierer.ZeigeSpeicherInhaltUnsafe(erdbahn);
+```
+
+#### 💡 Tipps
+
+- `params`: Erlaubt eine variable Anzahl an Parametern.
+- `Marshal.SizeOf`: Gibt die Größe eines Objekts im Speicher zurück (funktioniert nur für Werttypen oder blittable types).
+- `unsafe`: Erfordert explizite Aktivierung und ist plattformabhängig.
+
+---- FIXME
+
+
+### 🎨 Aufgabe 4: Bahnvisualisierung (ASCII)
+
+Lernziele: Algorithmen, Konsolenausgabe, Ellipsengleichung
+
+#### 📝 Aufgabenstellung
+
+Erstelle eine statische Klasse BahnVisualisierer mit einer Methode ZeichneBahnAscii, die:
+
+- Die Bahn eines Himmelskörpers als ASCII-Diagramm in der Konsole zeichnet.
+- Die Sonne (Brennpunkt) als O und die Bahn als * darstellt.
+- Die Exzentrizität der Bahn berücksichtigt.
+
+#### 🔧 Hilfestellungen
+
+1. Ellipsengleichung in Polarkoordinaten
+====================
+
+- Die Position eines Punktes auf einer Ellipse in Polarkoordinaten (relativ zu einem Brennpunkt) berechnet sich mit:
+- $r = a * (1 - e²) / (1 + e * cos(θ))$
+- Dabei gilt:
+   - a: Große Halbachse
+   - e: Exzentrizität
+   - θ: Winkel (0 bis 2π)
+
+2. Skalierung für die Konsole
+=====================
+
+- Skaliere die Koordinaten auf die Konsolengröße (z. B. 60x30 Zeichen).
+- Berechne die Skalierungsfaktoren für x und y basierend auf der großen Halbachse und der maximalen Höhe der Ellipse.
+- Die Sonne (Brennpunkt) befindet sich bei x = -a * e, y = 0 relativ zum Zentrum der Ellipse.
+- Zeichne die Bahn, indem du für verschiedene Werte von θ die entsprechenden x- und y-Koordinaten berechnest und in einem 2D-Char-Array speicherst.
+
+#### ✅ Testaufgabe
+
+```csharp
+
+BahnVisualisierer.ZeichneBahnAscii(erdbahn);
+BahnVisualisierer.ZeichneBahnAscii(marsbahn);
+```
+
+
+
+#### 💡 Tipps
+
+- Exzentrizität: Bei e = 0 ist die Bahn kreisförmig.
+- Skalierung: Passe skalaX und skalaY an, um die Bahn in die Konsole zu passen.
+- Winkel-Schrittweite: theta += 0.05 für eine glatte Bahn.
+
+### 📚 Zusammenfassung der Lerninhalte
+
+
+  
+    
+      Thema |       Inhalte
+    --- | ----
+      Namespaces |       Organisation von Code, Vermeidung von Namenskollisionen.
+      Vererbung |       Abstrakte Klassen, `base()`, `override`.
+      Immutability |       `init;`, unveränderliche Objekte.
+      Speicherdarstellung | `GetHashCode()`, `Equals()`, `unsafe`-Code (optional).
+      Algorithmen | Ellipsengleichung, Skalierung, ASCII-Kunst.
+    
+  
+
+
