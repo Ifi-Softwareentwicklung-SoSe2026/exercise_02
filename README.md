@@ -89,12 +89,15 @@ Wir bauen teilweise auf Programmierergebnisse aus den vorherigen Aufgaben auf. D
      ```
 
    - Füge die Datei `Himmelskoerper.cs` mit der `Himmelskörper` Klasse aus der vorherigen Übung hinzu.
+   - Diese wird verändert werden, aber sie dient als Ausgangspunkt für die neuen Aufgaben.
+   - letzte Version liegt auch unter `solutions` im GitHub-Repository `exercise_01` oder `exercise_02` vor.
 
 2. **Namespace definieren:**
 
    - Alle Klassen sollen im Namespace **`RaumfahrtMission`** liegen.
    - Warum ist die Verwendung von Namespaces wichtig?
    - Die Main-Methode soll in der Datei `Program.cs` liegen und den Namespace `RaumfahrtMission` verwenden (`using`).
+   - Eine `Program.cs`-Datei liegt im Ordner `exercise_code` im GitHub-Repository `exercise_02` vor, die als Ausgangspunkt genutzt werden kann. Diese enthält alle Ein- und Ausgaben der Aufgaben in diesem Übungsblock.
 
 ### **🌌 Aufgabe 1: Klassenhierarchie für Himmelskörper**
 
@@ -148,6 +151,18 @@ Erstelle eine **abstrakte Basisklasse `Himmelskoerper`** und leite davon die kon
 - **Constructor:**
 
   - Nimm `Name` und `KatalogNummer` als Parameter entgegen.
+  - nutze `base()` in den abgeleiteten Klassen, um den Constructor der Basisklasse aufzurufen.
+
+```csharp
+public class SubKlasse : BasisKlasse
+{
+    public SubKlasse(string name, int id)
+        : base(name) // Expliziter Aufruf des Basiskonstruktors
+    {
+        Console.WriteLine($"Subklasse-Konstruktor: {id}");
+    }
+}
+```
 
 
 2. Klasse Stern (abgeleitet von Himmelskoerper)
@@ -162,6 +177,7 @@ Erstelle eine **abstrakte Basisklasse `Himmelskoerper`** und leite davon die kon
 
    - Rufe den Base-Constructor mit base(name, katalogNummer) auf.
    - Initialisiere die zusätzlichen Eigenschaften.
+   - passe die `ToString()`-Methode an, um alle Eigenschaften auszugeben.
 
 
 3. Klasse Planet (abgeleitet von Himmelskoerper)
@@ -175,6 +191,8 @@ Erstelle eine **abstrakte Basisklasse `Himmelskoerper`** und leite davon die kon
 - Constructor:
 
    - Rufe den Base-Constructor auf.
+   - initialisiere die zusätzlichen Eigenschaften.
+   - passe die `ToString()`-Methode an, um alle Eigenschaften auszugeben.
 
 
 4. Klasse Mond (abgeleitet von Planet)
@@ -187,6 +205,7 @@ Erstelle eine **abstrakte Basisklasse `Himmelskoerper`** und leite davon die kon
 - Constructor:
 
    - Ähnlich wie Planet, aber für Monde.
+   - passe die `ToString()`-Methode an, um alle Eigenschaften auszugeben.
 
 
 #### ✅ Testaufgabe
@@ -220,13 +239,13 @@ Console.WriteLine(halley);
 
 ### 📊 Aufgabe 2: Bahndaten (Immutable DataBean)
 
-Lernziele: Immutable Klassen, Properties mit init;, GetHashCode()
+Lernziele: Immutable Klassen, Properties mit `init;`, GetHashCode()
 
 #### 📝 Aufgabenstellung
 
 Erstelle eine immutable Klasse Bahndaten mit:
 
-- Eigenschaften (nur `get;`):
+- Eigenschaften (`get;`, `init;`):
 
    - Himmelskoerper (Himmelskoerper-Objekt)
    - Umlaufzeit (double, in Erdjahren)
@@ -362,15 +381,21 @@ SpeicherVisualisierer.ZeigeSpeicherInhaltUnsafe(erdbahn.Umlaufzeit);
 
 ### 🎨 Aufgabe 4: Bahnvisualisierung (ASCII)
 
-Lernziele: Algorithmen, Konsolenausgabe, Ellipsengleichung
+Lernziele: Algorithmen, Konsolenausgabe, Ellipsengleichung, Abstrakte Klassen
 
 #### 📝 Aufgabenstellung
 
-Erstelle eine statische Klasse BahnVisualisierer mit einer Methode ZeichneBahnAscii, die:
+Erstelle eine Klasse BahnVisualisierer, die:
+
+- von BahnBasic erbt. 
+
+   - Die Sourcedatei `BahnBasic` liegt im Ordner `exercise_code` im GitHub-Repository. 
+   - https://github.com/Ifi-Softwareentwicklung-SoSe2026/exercise_02
 
 - Die Bahn eines Himmelskörpers als ASCII-Diagramm in der Konsole zeichnet.
 - Die Sonne (Brennpunkt) als `O` und die Bahn als `*` darstellt.
 - Die Exzentrizität der Bahn berücksichtigt.
+- implementiert die notwendigen Funktionen.
 
 #### 🔧 Hilfestellungen
 
@@ -420,9 +445,10 @@ Erstelle eine statische Klasse BahnVisualisierer mit einer Methode ZeichneBahnAs
 #### ✅ Testaufgabe
 
 ```csharp
-BahnVisualisierer.ZeichneBahnAscii(erdbahn);
-BahnVisualisierer.ZeichneBahnAscii(marsbahn);
-BahnVisualisierer.ZeichneBahnAscii(halleyBahn);
+var visualisierer = new BahnVisualisierer();
+visualisierer.ZeichneBahnAscii(erdbahn);
+visualisierer.ZeichneBahnAscii(marsbahn);
+visualisierer.ZeichneBahnAscii(halleyBahn);
 ```
 
 
@@ -443,6 +469,4 @@ BahnVisualisierer.ZeichneBahnAscii(halleyBahn);
 | Speicherdarstellung | `GetHashCode()`, `Equals()`, `unsafe`-Code (optional). |
 | Algorithmen | Ellipsengleichung, Skalierung, ASCII-Art |
     
-  
-
 
