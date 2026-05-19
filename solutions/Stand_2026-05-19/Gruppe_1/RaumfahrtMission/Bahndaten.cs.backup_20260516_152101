@@ -1,0 +1,34 @@
+namespace RaumfahrtMission
+{
+    public class Bahndaten
+    {
+        private _himmelskoerper;
+        public Himmelskoerper Himmelskoerper {
+            get => _himmelskoerper;
+            init{
+                if (value is not (Planet or Mond or Komet))
+                    throw new ArgumentException(
+                        "Himmelskoerper muss ein Planet, Mond oder Komet sein.");
+                _himmelskoerper = value;
+            }
+        }
+        public double Umlaufzeit {
+            get => ((Planet)Himmelskoerper).Umlaufzeit;
+        }
+        public double GroßeHalbachse {get; init;}
+        public double Exzentrizität {get; init;}
+
+        public Bahndaten(
+            Himmelskoerper himmelskoerper,
+            double umlaufzeit, 
+            double großeHalbachse, 
+            double exzentrizität)
+        {
+            this.Himmelskoerper = himmelskoerper;
+            // umlaufzeit müssen wir nicht setzen, die steht schon in himmelskoerper
+            this.GroßeHalbachse = großeHalbachse;
+            this.Exzentrizität = exzentrizität;
+        }
+    }
+
+}

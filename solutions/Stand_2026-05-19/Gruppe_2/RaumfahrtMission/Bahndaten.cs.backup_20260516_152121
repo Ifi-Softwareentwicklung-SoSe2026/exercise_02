@@ -1,0 +1,44 @@
+namespace RaumfahrtMission
+{
+   public class Bahndaten
+   {
+        public Bahndaten(Himmelskoerper himmelskoerper, 
+            double umlaufzeit, double großeHalbachse, double exzentrizität)
+        {
+            this.Himmelskoerper = himmelskoerper;
+            // mit umlaufzeit mach ich nix, ist bereits in Himmelskoerper.Umlaufzeit
+            this.GroßeHalbachse = großeHalbachse;
+            this.Exzentrizität = exzentrizität;
+        }
+        private Himmelskoerper _himmelskoerper;
+        public Himmelskoerper Himmelskoerper{
+            get=> _himmelskoerper;
+            init {
+                if (value is not (Planet or Mond or Komet)){
+                    throw new ArgumentException("Himmelskoerper muss ein Planet, Mond oder Komet sein.");
+                }
+                _himmelskoerper = value;
+            }
+        }
+        public double Umlaufzeit{
+            get => ((Planet)Himmelskoerper).Umlaufzeit;
+        }
+        public string Name{
+            get => Himmelskoerper.Name;
+        }
+        public double GroßeHalbachse {get; init;}
+        public double Exzentrizität {get; init;}
+   
+        public override string ToString()
+        {
+            return $"Bahn der {Name} ({Himmelskoerper.GetType().Name}),"+
+                $"Umlaufzeit: {Umlaufzeit} Jahre, Große Halbachse: {GroßeHalbachse} AE,"+
+                $"Exzentrizität: {Exzentrizität}.";
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Himmelskoerper, Umlaufzeit, GroßeHalbachse, Exzentrizität);
+        }
+   } 
+}

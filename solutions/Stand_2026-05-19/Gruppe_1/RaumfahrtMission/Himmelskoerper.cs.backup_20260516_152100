@@ -1,0 +1,166 @@
+using System.Text;
+
+namespace RaumfahrtMission
+{
+public abstract class Himmelskoerper
+    {
+    public Himmelskoerper(string name, uint katnr){
+        this.Name = name;
+        this.KatalogNummer = katnr;
+    }
+    // fields 
+    private string _name = String.Empty;
+    public string Name 
+    { 
+        // TODO: explain the null-coalescing operator in class
+        get => _name;
+        set => _name = (value ?? "Unbekannt").Trim();
+    }
+    private uint _katnr;
+    public uint KatalogNummer { 
+        get => _katnr;
+        set {
+           if(!isAKatalogNummer(value))
+           {
+                throw new ArgumentOutOfRangeException(nameof(value), "Katalognummer muss 5-stellig sein.");
+           }
+           _katnr = value;
+        }
+    }
+    // TODO: explain in class
+    protected bool isAKatalogNummer(uint katnr)
+    {
+        return !(katnr < 10000 || katnr > 99999);
+    }
+    public static bool operator ==(Himmelskoerper? left, Himmelskoerper? right)
+    {
+        // testen ob left und right der selbe Himmelskoerper sind
+        if (ReferenceEquals(left, right))        {
+            return true;
+        }
+        // auf null
+        if (left is null || right is null){
+            return false;
+        }
+        // Namen test
+        return left.Name == right.Name;
+    }
+    public static bool operator !=(Himmelskoerper? left, Himmelskoerper? right){
+        return !(left == right);
+    }
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Himmelskoerper other)
+        {
+            return false;
+        }
+        return this == other;
+    }
+    public override int GetHashCode()
+    {
+        return Name.GetHashCode();
+    }
+    public override string ToString()
+    {
+        // TODO: show this in class !
+        //return $"Himmelskörper: {Name}, Katalog-Nummer: {KatalogNummer},";
+        return $"{this.GetType().Name}: {Name}, Katalog-Nummer: {KatalogNummer},";
+    }
+}
+
+public class Stern : Himmelskoerper
+{
+    public Stern(string name, uint katnr, char spektralklasse, double helligkeit) : base(name, katnr)
+    {
+        this.SpektralKlasse = spektralklasse;
+        this.Helligkeit = helligkeit;
+    }
+    // helligkeit
+    private double _helligkeit;
+    public double Helligkeit {
+         get => _helligkeit;
+         set {
+            if (value != 0){
+                _helligkeit = value;
+            }else{
+                throw new ArgumentOutOfRangeException(nameof(value), "Helligkeit darf nicht 0 sein.");
+            }
+         }
+    }
+    // spectral
+    private char _spectralklasse;
+
+    public char SpektralKlasse { 
+        get => _spectralklasse;
+        set {
+            char[] gueltigeSpektralklassen = { 'O', 'B', 'A', 'F', 'G', 'K', 'M'};
+            if (!gueltigeSpektralklassen.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value),"Ungültige Spektralklasse.");
+            }
+            _spectralklasse = value;
+        }
+    }
+    // Vollständiger Typ
+    public string VollstaendigerTyp
+    {
+        get
+        {
+            return $"{this.GetType().Name} ({SpektralKlasse}-Klasse)";
+        }
+    }
+    public override string ToString()
+    {
+        //TODO: explain in class -> https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
+        return $"{base.ToString()}, {VollstaendigerTyp}, scheint mit Helligkeit {Helligkeit:F2}";
+    }
+}
+class Planet : Himmelskoerper
+{
+    public Planet(string name, uint katnr, double umlauf, uint katnrref) : base(name, katnr)
+    {
+        this.Umlauf = umlauf;
+        this.KatalogNummerReferenz = katnrref;
+    }
+    // Umlauf
+    private double _umlauf;
+    public double Umlauf {
+        get => _umlauf;
+        set {
+            if (value != 0){
+                _umlauf = value;
+            }else{
+                throw new ArgumentOutOfRangeException(nameof(value), "Umlaufzeit darf nicht 0 sein.");
+            }
+
+        }
+    }
+    // KatNr von Elternobjekt
+    private uint _katnrref;
+    public uint KatalogNummerReferenz {
+        get => _katnrref;
+        set {
+           if(!isAKatalogNummer(value))
+           {
+                throw new ArgumentOutOfRangeException(nameof(value), "Katalognummer muss 5-stellig sein.");
+           }
+           _katnrref = value;
+        }
+    }    
+    public override string ToString()
+    {
+        return $"{base.ToString()}, Umlaufzeit: {Umlauf:N2} Jahre, Referenz-Katalognummer: {KatalogNummerReferenz}";
+    }
+}
+class Mond : Planet
+{
+    public Mond(string name, uint katnr, double umlauf, uint katnrref) : base(name, katnr, umlauf, katnrref)
+    {
+    }
+
+}
+// TODO: explain comet; primary constructor
+class Komet(string name, uint katnr, double umlauf, uint katnrref) : Planet(name, katnr, umlauf, katnrref)
+{
+}
+}
